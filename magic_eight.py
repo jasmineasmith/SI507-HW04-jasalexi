@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-while True:
-	ask_user=input("What is your question? (please end in '?')")
-	if ask_user=="quit"
-		break
-	if ask_user.endswith("?")==False:
-		print("I’m sorry, I can only answer questions.")
-
-
-=======
-ask_user=input("What is your question? (please end in '?')")
-
 eight_ball = ["Signs point to yes","Yes","Reply hazy try again",
             "Without a doubt","My sources say no","As I see it, yes",
             "You may rely on it","Concentrate and ask again",
@@ -18,4 +6,12 @@ eight_ball = ["Signs point to yes","Yes","Reply hazy try again",
             "It is certain","Cannot predict now","Most likely",
             "Ask again later","My reply is no","Outlook good","Don't count on it"]
 eight_answer = random.choice(eight_ball)
->>>>>>> 1421632434fd4406549896d8a19650fa33944128
+while True:
+	ask_user=input("What is your question? (please end in '?')")
+	if ask_user=="quit"
+		break
+	if ask_user.endswith("?")==False:
+		print("I’m sorry, I can only answer questions.")
+	else:
+		eight_answer=random.choice(eight_ball)
+		print(eight_answer)

@@ -8,7 +8,7 @@ eight_ball = ["Signs point to yes","Yes","Reply hazy try again",
 eight_answer = random.choice(eight_ball)
 while True:
 	ask_user=input("What is your question? (please end in '?')")
-	if ask_user=="quit"
+	if ask_user=="quit":
 		break
 	if ask_user.endswith("?")==False:
 		print("I’m sorry, I can only answer questions.")

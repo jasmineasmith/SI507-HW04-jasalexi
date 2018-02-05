@@ -1,4 +1,5 @@
 import random
+
 eight_ball = ["Signs point to yes","Yes","Reply hazy try again",
             "Without a doubt","My sources say no","As I see it, yes",
             "You may rely on it","Concentrate and ask again",

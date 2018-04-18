@@ -150,46 +150,10 @@ def get_projname(year):
 #print(zz)
 
 
-def get_director(year):
-    a=get_aef_data(year)
-    soup = BeautifulSoup(a, 'html.parser')
-    b=soup.find_all(style="font-weight:bold;")
-    projlist=[]
-    for thing in b:
-    	projlist.append(thing.text)
-    e=soup.find('p')
-    g=e.text
-    h=str(g)
-    i=h.split('\n')
-    for thing in i:
-    	if thing=='':
-    		i.remove(thing)
-    #proj=[]
-    direc=[]
-    for sthing in i:
-    	# if '\r' in sthing and '\t' not in sthing:
-    	# 	proj.append(sthing)
-    	if '\t' in sthing:
-    		direc.append(sthing)
-    newd=[]
-    for strang in direc:
-    	m=strang.strip('	')
-    	j=m.split(',')
-    	newd.append(j)
-    for thing in newd:
-    	if len(thing) < 2:
-    		newd.remove(thing)
-    #print(i[0].strip('\r'))
-    # tuplist=[]
-    # for name in proj:
-    # 	#for listt in newd:
-    # 	tup=(name,)
-    # tuplist.append(tup)
-    # for listt in newd:
-    # 	#for tupl in tuplist:
-    # 		tupl[1]=listt[0]
-    #print(newd)
-    #return newd 
+def get_rounds(year):
+	vv=[[2003, 1], [2004, 2], [2005, 3], [2006, 4], [2007, 5], [2008, 6], [2009, 7], [2010, 8], [2011, 9], [2012, 10], [2013, 11], [2014, 12]]
+	return vv
+    
 
     #print(i)
     #print(type(j))
@@ -206,6 +170,7 @@ yyyy=[2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014]
 for yy in yyyy:
 	j=get_aef_data(yy)
 	z=get_projname(yy)
+	k=get_rounds(yy)
 	dicttt[yy]=z
 tups=dicttt.items()
 tups2=[]
@@ -290,7 +255,7 @@ def init_db(db_name):
         print('Oh no! Connection failed.')
 
     statement = '''
-        DROP TABLE IF EXISTS 'Institutions';
+        DROP TABLE IF EXISTS 'Rounds';
     '''
     statement2 = '''
         DROP TABLE IF EXISTS 'AEFProjects';
@@ -301,9 +266,10 @@ def init_db(db_name):
 
 
     statement2='''
-        CREATE TABLE 'Institutions'(
+        CREATE TABLE 'Rounds'(
              'Id' INTEGER PRIMARY KEY AUTOINCREMENT,
-              'Name' TEXT
+              'Year' INTEGER,
+              'RoundNumber' INTEGER
               )
      '''
 
@@ -314,8 +280,7 @@ def init_db(db_name):
              'Year' TEXT,
              'Name' TEXT,
              'Director' TEXT,
-             'InstitutionID' TEXT,
-             FOREIGN KEY ('InstitutionID') REFERENCES 'Institutions'(Id))
+             FOREIGN KEY ('Round') REFERENCES 'Rounds'(RoundNumber))
     '''
     
     cur.execute(statement2)
@@ -341,28 +306,29 @@ def insert_proj_data(projlst):
     		if aa==2009 and '\r' in thin:
     			m=thin.strip('	')
     			j=m.split(',')
-    			insertion = (None, None, aa, abc, j[0], None)
+    			insertion = (None, None, aa, abc, j[0])
 		    	statement = 'INSERT INTO "AEFProjects"'
-		    	statement += 'VALUES (?, ?, ?, ?, ?, ?)'
+		    	statement += 'VALUES (?, ?, ?, ?, ?)'
 		    	cur.execute(statement, insertion)
     		if aa==2010 and '\r' not in thin and '\t' not in thin:
     			abc=thin
     		if aa==2010 and '\r' in thin:
     			m=thin.strip('	')
     			j=m.split(',')
-    			insertion3 = (None, None, aa, abc, j[0], None)
+    			insertion3 = (None, None, aa, abc, j[0])
 		    	statement3 = 'INSERT INTO "AEFProjects"'
-		    	statement3 += 'VALUES (?, ?, ?, ?, ?, ?)'
+		    	statement3 += 'VALUES (?, ?, ?, ?, ?)'
 		    	cur.execute(statement3, insertion3)
     		if aa!=2009 and aa!=2010 and aa!=2014 and aa!=2013 and aa!=2012 and aa!=2011 and '\r' in thin and '\t' not in thin:
     			abc=thin
     		if aa!=2009 and aa!=2010 and aa!=2014 and aa!=2013 and aa!=2012 and aa!=2011 and'\t' in thin:
     			m=thin.strip('	')
     			j=m.split(',')
-    			insertion2 = (None, None, aa, abc, j[0], None)
-		    	statement2 = 'INSERT INTO "AEFProjects"'
-		    	statement2 += 'VALUES (?, ?, ?, ?, ?, ?)'
-	    		cur.execute(statement2, insertion2)
+    			if len(j)>1:
+	    			insertion2 = (None, None, aa, abc, j[0])
+			    	statement2 = 'INSERT INTO "AEFProjects"'
+			    	statement2 += 'VALUES (?, ?, ?, ?, ?)'
+		    		cur.execute(statement2, insertion2)
     		if aa==2014 and '/r' in thin or aa==2013 and '/r' in thin or aa==2012 and '/r' in thin or aa==2011 and '/r' in thin:
     			abc=thin.strip('/r')
     		if aa==2014 and '/t' in thin or aa==2013 and '/t' in thin or aa==2012 and '/t' in thin or aa==2011 and '/t' in thin:
@@ -370,23 +336,41 @@ def insert_proj_data(projlst):
     			n=m.strip('/t')
     			ii=n.replace(':', ',')
     			j=ii.split(',')
-    			insertion4 = (None, None, aa, abc, j[0], None)
+    			insertion4 = (None, None, aa, abc, j[0])
 		    	statement4 = 'INSERT INTO "AEFProjects"'
-		    	statement4 += 'VALUES (?, ?, ?, ?, ?, ?)'
+		    	statement4 += 'VALUES (?, ?, ?, ?, ?)'
 	    		cur.execute(statement4, insertion4)	    		
 
 		    	
-
-
-
-
-
     conn.commit()
     conn.close()
 
 insert_proj_data(z)
 
 #if len(j) > 1:
+
+
+def insert_rounds(roundlst):
+    conn = sqlite3.connect('arce.db')
+    cur = conn.cursor()
+
+    for x in roundlst:
+        insertion = (None, x[0], x[1])
+        statement = 'INSERT INTO "Rounds" '
+        statement += 'VALUES (?, ?, ?)'
+        cur.execute(statement, insertion)
+
+    conn.commit()
+    conn.close()
+
+insert_rounds(k)
+
+conn = sqlite3.connect('arce.db')
+cur = conn.cursor()
+insert='UPDATE AEFProjects SET Round=(SELECT RoundNumber FROM Rounds WHERE AEFProjects.Year=Rounds.Year)'
+cur.execute(insert)
+conn.commit()
+conn.close()
 
 # # # ########################################################################
 
@@ -536,20 +520,6 @@ def plot_institutions(year):
 
 
 
-# def insert_dir_data(direclst):
-#     conn = sqlite3.connect('arce.db')
-#     cur = conn.cursor()
-
-#     for x in direclst:
-#         insertion = (None, x[0])
-#         statement = 'INSERT INTO "Institutions" '
-#         statement += 'VALUES (?, ?)'
-#         cur.execute(statement, insertion)
-
-#     conn.commit()
-#     conn.close()
-
-# insert_dir_data(k)
 
 # # ########################################################################
 
